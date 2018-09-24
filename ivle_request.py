@@ -15,14 +15,22 @@ class IvleRequest:
 
   def get_files_request(self, module_code, duration):
     params = {"APIKey": self.ivle_key, "AuthToken": self.ivle_token, "CourseID": module_code, 
-              "Duration": duration, "WorkbinID": "", "TitleOnly": "false"}
+              "Duration": duration, "WorkbinID": "", "TitleOnly": False}
     r = requests.get(self.url + "Workbins", params=params)
+    print(r.url)
     print(r.content)
-    root = et.fromstring(r.content) 
+    root = et.fromstring(r.content)
+
+  def validate(self):
+    params = {"APIKey": self.ivle_key, "Token": self.ivle_token}
+    r = requests.get(self.url + "Validate", params=params)
+    data = r.json()
+    print(f"Valid?: {data['Success']}")
 
 def main():
   ivle_request = IvleRequest()
-  ivle_request.get_files_request("CS1101S", 0)
+  ivle_request.get_files_request("MA1521", 0)
+  # ivle_request.validate()
 
 if __name__ == "__main__":
     main()
