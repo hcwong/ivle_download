@@ -1,8 +1,7 @@
 import os
 import requests
 import pprint
-import gzip
-import shutil
+import argparse
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -77,10 +76,13 @@ class IvleRequest:
 
 
 def main():
+  parser = argparse.ArgumentParser(description="Run the IVLE downloader")
+  parser.add_argument("-d", "--duration")
+  parser.add_argument("-m", "--modules")
+  args = vars(parser.parse_args())
   ivle_request = IvleRequest()
-  ivle_request.get_files(["CS1101S", "MA1521"], 7000)
-  # ivle_request.download_file("1b8eec1c-b2de-4151-a2e5-ae2fc37f870d")
-
+  day_to_min = lambda x: x / s1440
+  ivle_request.get_files(args["modules"],split(""), day_to_min(args["duration"]))
 
 if __name__ == "__main__":
     main()
