@@ -34,9 +34,8 @@ class IvleRequest:
     file_elements = []
     # TOFIX: A bit too nested. Clean up
     for key, value in module_mappings.items():
-      results_list = self.get_file_request(value, duration)["Results"]
+      results_list = self.get_file_request(value.upper(), duration)["Results"]
       if results_list:
-        # TOFIX: Also returns files which were uploaded before that time period
         for element in results_list[0]["Folders"]:
           if element["Files"]:
             file_elements += (element["Files"])
@@ -57,7 +56,7 @@ class IvleRequest:
     url = "https://ivle.nus.edu.sg/api/downloadfile.ashx"
     r = requests.get(url, params=params)
     data = r.content
-    with open(f"./{file_name}", "wb+") as f_out:
+    with open(f"./{DOWNLOAD_PATH}/{file_name}", "wb+") as f_out:
       f_out.write(data)
 
   def get_modules(self, selections):
@@ -79,10 +78,11 @@ def main():
   parser = argparse.ArgumentParser(description="Run the IVLE downloader")
   parser.add_argument("-d", "--duration")
   parser.add_argument("-m", "--modules")
+  parser.add_argument("-v", "--validate")
   args = vars(parser.parse_args())
   ivle_request = IvleRequest()
-  day_to_min = lambda x: x / s1440
-  ivle_request.get_files(args["modules"],split(""), day_to_min(args["duration"]))
+  day_to_min = lambda x: int(x) * 1440
+  ivle_request.get_files(args["modules"].split(" "), day_to_min(args["duration"]))
 
 if __name__ == "__main__":
     main()
